@@ -1,0 +1,87 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Storage/storageAccounts"
+      },
+      {
+        "field": "tags['env']",
+        "equals": "role"
+      }
+    ]
+  },
+  "then": {
+    "effect": "deployIfNotExists",
+    "details": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "roleDefinitionIds": [
+        "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
+      ],
+      "existenceCondition": {
+        "allOf": [
+          {
+            "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
+            "like": "*/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
+          },
+          {
+            "field": "Microsoft.Authorization/roleAssignments/principalId",
+            "equals": "8f3b6d56-c599-4f13-81f8-581f20a959b6"
+          },
+          {
+            "field": "Microsoft.Authorization/roleAssignments/scope",
+            "equals": "[field('id')]"
+          }
+        ]
+      },
+      "deployment": {
+        "properties": {
+          "mode": "incremental",
+          "parameters": {
+            "saId": {
+              "value": "[field('id')]"
+            }
+          },
+          "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "saId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Full Id of the storage account"
+                }
+              },
+              "adGroupId": {
+                "type": "string",
+                "defaultValue": "8f3b6d56-c599-4f13-81f8-581f20a959b6",
+                "metadata": {
+                  "description": "ObjectId of an AD group"
+                }
+              },
+              "ownerRbacRole": {
+                "type": "string",
+                "defaultValue": "[concat(parameters('saId'),'/providers/Microsoft.Authorization/roleDefinitions/c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                "metadata": {
+                  "description": "Owner RBAC role definition ID"
+                }
+              }
+            },
+            "resources": [
+              {
+                "type": "Microsoft.Authorization/roleAssignments",
+                "apiVersion": "2018-09-01-preview",
+                "name": "[guid(resourceGroup().id, deployment().name)]",
+                "scope": "[parameters('saId')]",
+                "properties": {
+                  "roleDefinitionId": "[parameters('ownerRbacRole')]",
+                  "principalId": "[parameters('adGroupId')]"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
