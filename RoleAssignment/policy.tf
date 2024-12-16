@@ -14,28 +14,35 @@ resource "azurerm_policy_definition" "storage_account_role_assignment" {
 
 }
 
-data "azurerm_role_definition" "uaa" {
-  name = "User Access Administrator"
-}
-
-data "azurerm_role_definition" "contributor" {
-  name = "Contributor"
-}
-
 data "azurerm_subscription" "primary" {}
 
+resource "azurerm_role_definition" "role_definition_depploy" {
+  name               = "Deployment-tf"
+  scope              = data.azurerm_subscription.primary.id
 
-resource "azurerm_role_assignment" "roleAssignement_uaa" {
+  permissions {
+    actions     = ["Microsoft.Resources/deployments/write",
+                    "Microsoft.Resources/deployments/validate/action"]
+    not_actions = []
+  }
+
+  assignable_scopes = [
+    data.azurerm_subscription.primary.id,
+  ]
+}
+
+resource "azurerm_role_assignment" "roleAssignement_deploy" {
   scope                = "/subscriptions/52c93eeb-4017-4b73-9816-d8b8a92aff1e"
-  role_definition_id = "${data.azurerm_subscription.primary.id}${data.azurerm_role_definition.uaa.id}"
+  role_definition_id   = azurerm_role_definition.role_definition_depploy.role_definition_resource_id
   principal_id         = azurerm_subscription_policy_assignment.tag_based_role_assignment.identity[0].principal_id
 
   depends_on = [azurerm_policy_definition.storage_account_role_assignment]
 }
 
-resource "azurerm_role_assignment" "roleAssignement_contributor" {
+
+resource "azurerm_role_assignment" "roleAssignement_uaa" {
   scope                = "/subscriptions/52c93eeb-4017-4b73-9816-d8b8a92aff1e"
-  role_definition_id = "${data.azurerm_subscription.primary.id}${data.azurerm_role_definition.contributor.id}"
+  role_definition_name = "User Access Administrator"
   principal_id         = azurerm_subscription_policy_assignment.tag_based_role_assignment.identity[0].principal_id
 
   depends_on = [azurerm_policy_definition.storage_account_role_assignment]
