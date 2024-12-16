@@ -16,13 +16,13 @@
     "details": {
       "type": "Microsoft.Authorization/roleAssignments",
       "roleDefinitionIds": [
-        "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
+        "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
       ],
       "existenceCondition": {
         "allOf": [
           {
             "field": "Microsoft.Authorization/roleAssignments/roleDefinitionId",
-            "like": "*/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
+            "like": "*/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
           },
           {
             "field": "Microsoft.Authorization/roleAssignments/principalId",
@@ -61,7 +61,7 @@
               },
               "ownerRbacRole": {
                 "type": "string",
-                "defaultValue": "[concat(parameters('saId'),'/providers/Microsoft.Authorization/roleDefinitions/c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                "defaultValue": "[concat(parameters('saId'),'/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                 "metadata": {
                   "description": "Owner RBAC role definition ID"
                 }

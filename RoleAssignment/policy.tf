@@ -15,7 +15,7 @@ resource "azurerm_policy_definition" "storage_account_role_assignment" {
 }
 
 data "azurerm_role_definition" "uaa" {
-  name = "User Access Administrator"
+  name = "Owner"
 }
 
 data "azurerm_subscription" "primary" {}
